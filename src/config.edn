@@ -1,0 +1,7 @@
+{:ig/system
+ {:nonogram-generator.generator.core/string "Hello, generator!"
+  :edge.yada.ig/listener {:handler #ig/ref :edge.bidi.ig/vhost
+                          :port 9898}
+  :edge.bidi.ig/vhost [["http://localhost:9898"
+                        [""
+                         [["/" #ig/ref :nonogram-generator.generator.core/string]]]]]}}
