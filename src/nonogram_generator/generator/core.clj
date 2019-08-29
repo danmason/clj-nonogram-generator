@@ -26,18 +26,11 @@
       ))
 
 (defn get-image-array [image width height]
-  (loop [x 0 img-array []]
-    (if (= width x)
-      img-array
-      (recur
-       (inc x)
-       (conj img-array
-             (loop [y 0 row-array []]
-               (if (= height y)
-                 row-array
-                 (recur
-                  (inc y)
-                  (conj row-array (first (.get image x y)))))))))))
+  (loop [x 0 y 0 img-array [] row-array []]
+    (cond
+      (= width x) img-array
+      (= height y) (recur (inc x) 0 (conj img-array row-array) [])
+      :else (recur x (inc y) img-array (concat row-array (.get image x y))))))
 
 (defn count-row [line]
   (loop [orig line split []]
