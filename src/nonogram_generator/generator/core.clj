@@ -1,9 +1,10 @@
 (ns nonogram-generator.generator.core
   (:require
-    [yada.yada :as yada]
-    [integrant.core :as ig]
-    [opencv4.utils :as u]
-    [opencv4.core :refer :all]))
+   [clojure.string :as s]
+   [yada.yada :as yada]
+   [integrant.core :as ig]
+   [opencv4.utils :as u]
+   [opencv4.core :refer :all]))
 
 (defn string-resource
   [x]
@@ -25,28 +26,39 @@
       ;(adaptive-threshold! 1.0 ADAPTIVE_THRESH_MEAN_C THRESH_BINARY_INV 3 4)
       ))
 
-(defn get-image-array [image width height]
-  (loop [x 0 y 0 img-array [] row-array []]
-    (cond
-      (= width x) img-array
-      (= height y) (recur (inc x) 0 (conj img-array row-array) [])
-      :else (recur x (inc y) img-array (concat row-array (.get image x y))))))
+(defn get-image-array [image width]
+  (->  image
+       .dump
+       (s/replace #"[^01]" "")
+       ((fn [x] (partition width x)))))
 
 (defn count-row [line]
   (loop [orig line split []]
     (cond
       (empty? orig) (map count split)
-      (= 0.0  (first orig)) (recur (drop-while #(= % 0.0) orig) split)
+      (= \0  (first orig)) (recur (drop-while #(= % \0) orig) split)
       :else
-      (let [zs (split-with #(= % 1.0) orig)]
+      (let [zs (split-with #(= % \1) orig)]
         (recur (second zs) (conj split (first zs)))))))
 
+(defn print-image-row [image-row]
+  (->> image-row
+   (map #(s/replace (str %) #"0" " "))
+   (map #(s/replace (str %) #"1" "X"))
+   (apply str)))
+
+(defn print-image-array [image-array]
+  "Print results of 'get-image-array' to console toquickly check the appearance of the nonogram board"
+  (doseq [x (map print-image-row image-array)]
+    (prn x)))
+
 (defn process-image [image width height]
-  (let [xs (byte-array [])]
-    (-> image
-        (load-image width height)
-        (binarize-image)
-        (get-image-array width height)
-        ;(#(map count-row %))
-        ;(#(map count-row (apply mapv vector %)))
-        )))
+  (-> image
+      (load-image width height)
+      (binarize-image)
+      (get-image-array width)
+
+      ;;(print-image-array)
+      ;;(#(map count-row %))
+      ;;(#(map count-row (apply mapv vector %)))
+      ))
