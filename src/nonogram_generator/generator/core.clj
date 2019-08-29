@@ -20,10 +20,10 @@
       (u/mat-from-url CV_8UC1)
       (resize! (new-size width height))))
 
-(defn binarize-image [image]
+(defn binarize-image [image invert]
   (-> image
-      (threshold! 80.0 1.0 THRESH_BINARY_INV)
-      ;(adaptive-threshold! 1.0 ADAPTIVE_THRESH_MEAN_C THRESH_BINARY_INV 3 4)
+      ;; Add 'binary inversion' option
+      (threshold! 0.0 1.0 (+ THRESH_BINARY_INV THRESH_OTSU))
       ))
 
 (defn get-image-array [image width]
