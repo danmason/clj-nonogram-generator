@@ -58,6 +58,9 @@
       (binarize-image invert)
       (get-image-array width)))
 
+(defn generate-empty-board [width height]
+  (repeat height  (repeat width \0)))
+
 (defn generate-nonogram-board [image width height invert?]
   (let [image-array (process-image image width height invert?)
         row-info (map count-row image-array)
@@ -67,3 +70,5 @@
     (prn "Col counts: " col-info)))
 
 (generate-nonogram-board "https://image.shutterstock.com/z/stock-photo-red-apple-on-white-background-158989157.jpg" 20 20 true)
+
+(print-image-array (generate-empty-board 20 20))
