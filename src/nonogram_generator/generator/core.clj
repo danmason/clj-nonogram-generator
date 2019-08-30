@@ -53,10 +53,9 @@
     (prn x)))
 
 (defn switch-at-pos [image-array x y]
-  (let [row (nth image-array y)
-        val-at-pos (nth row x)
+  (let [val-at-pos (get-in image-array y x)
         new-val (if (= \1 val-at-pos) \0 \1)]
-    (assoc image-array y (assoc row x new-val))
+    (assoc-in image-array [y x] new-val)
     )
   )
 
