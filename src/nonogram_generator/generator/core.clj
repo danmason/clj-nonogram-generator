@@ -51,7 +51,7 @@
       (let [zs (split-with #(= % \1) orig)]
         (recur (second zs) (conj split (first zs)))))))
 
-(defn print-format-row [image-row]
+(defn format-row [image-row]
   "Prepares a current row for printing to the terminal by replacing all
    instances of '1' with an 'X' and all instances of '0' with a blank space.
    Contents of the row are then joined together as a string to be printed"
@@ -63,17 +63,15 @@
 (defn print-image-array [image-array]
   "Print results of 'get-image-array' to console to quickly check the
    appearance of the nonogram board"
-  (doseq [x (map print-image-row image-array)]
+  (doseq [x (map format-row image-array)]
     (prn x)))
 
 (defn switch-at-pos [nono-board x y]
   "Takes a position, (x,y) and switches the value at the current position
    within the passed in Nonogram board."
-  (let [val-at-pos (get-in nono-board y x)
+  (let [val-at-pos (get-in nono-board [y x])
         new-val (if (= \1 val-at-pos) \0 \1)]
-    (assoc-in nono-board [y x] new-val)
-    )
-  )
+    (assoc-in nono-board [y x] new-val)))
 
 (defn generate-empty-board [width height]
   "Generates an empty board (full of zeros) with dimensions (width x height)"
@@ -97,6 +95,3 @@
     (prn "Col counts: " col-info)))
 
 (generate-nonogram-board "https://image.shutterstock.com/z/stock-photo-red-apple-on-white-background-158989157.jpg" 20 20 true)
-
-(print-image-array (generate-empty-board 20 20))
-(switch-at-pos (generate-empty-board 5 5) 1 1)
