@@ -20,11 +20,10 @@
       (u/mat-from-url CV_8UC1)
       (resize! (new-size width height))))
 
-(defn binarize-image [image invert]
-  (-> image
-      ;; Add 'binary inversion' option
-      (threshold! 0.0 1.0 (+ THRESH_BINARY_INV THRESH_OTSU))
-      ))
+(defn binarize-image [image invert?]
+  (if invert?
+    (threshold! image 0.0 1.0 (+ THRESH_BINARY_INV THRESH_OTSU))
+    (threshold! image 0.0 1.0 THRESH_OTSU)))
 
 (defn get-image-array [image width]
   (->  image
@@ -52,18 +51,18 @@
   (doseq [x (map print-image-row image-array)]
     (prn x)))
 
-(defn process-image [image width height]
+(defn process-image [image width height invert?]
   (-> image
       (load-image width height)
-      (binarize-image false)
+      (binarize-image invert)
       (get-image-array width)))
 
-(defn generate-nonogram-board [image width height]
-  (let [image-array (process-image image width height)
+(defn generate-nonogram-board [image width height invert?]
+  (let [image-array (process-image image width height invert?)
         row-info (map count-row image-array)
         col-info (map count-row (apply mapv vector image-array))]
     (print-image-array image-array)
     (prn "Row counts: " row-info)
     (prn "Col counts: " col-info)))
 
-;;(generate-nonogram-board "https://image.shutterstock.com/z/stock-photo-red-apple-on-white-background-158989157.jpg" 20 20)
+(generate-nonogram-board "https://image.shutterstock.com/z/stock-photo-red-apple-on-white-background-158989157.jpg" 20 20 true)
