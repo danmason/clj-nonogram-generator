@@ -52,6 +52,14 @@
   (doseq [x (map print-image-row image-array)]
     (prn x)))
 
+(defn switch-at-pos [image-array x y]
+  (let [row (nth image-array y)
+        val-at-pos (nth row x)
+        new-val (if (= \1 val-at-pos) \0 \1)]
+    (assoc image-array y (assoc row x new-val))
+    )
+  )
+
 (defn process-image [image width height invert?]
   (-> image
       (load-image width height)
@@ -59,7 +67,7 @@
       (get-image-array width)))
 
 (defn generate-empty-board [width height]
-  (repeat height  (repeat width \0)))
+  (into [] (repeat height (into [] (repeat width \0)))))
 
 (defn generate-nonogram-board [image width height invert?]
   (let [image-array (process-image image width height invert?)
@@ -72,3 +80,4 @@
 (generate-nonogram-board "https://image.shutterstock.com/z/stock-photo-red-apple-on-white-background-158989157.jpg" 20 20 true)
 
 (print-image-array (generate-empty-board 20 20))
+(switch-at-pos (generate-empty-board 5 5) 1 1)
