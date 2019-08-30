@@ -63,7 +63,7 @@
         row-info (map count-row image-array)
         col-info (map count-row (apply mapv vector image-array))]
     (print-image-array image-array)
-    (prn (str "Row counts: " row-info))
-    (prn (str "Col counts: " col-info))))
+    (prn "Row counts: " row-info)
+    (prn "Col counts: " col-info)))
 
-(generate-nonogram-board "https://image.shutterstock.com/z/stock-photo-red-apple-on-white-background-158989157.jpg" 20 20)
+;;(generate-nonogram-board "https://image.shutterstock.com/z/stock-photo-red-apple-on-white-background-158989157.jpg" 20 20)
